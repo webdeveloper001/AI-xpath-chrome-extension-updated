@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/bar.css">
+</head>
+<body>
+<div id="flex-box">
+    <div id="left-box">
+
+    <!--     <div id="parent-box">
+            <div class="box-name">Container Wrapping All Similar Elements</div>
+            <div class="horizontal-flow">
+                <textarea id="parent"></textarea>
+                <button id="get-parent">Find Wrapping<br>Container</button>
+            </div>
+        </div>
+     -->
+        <div id="query-box">
+            <div class="box-name">Query (Relative to Container)</div>
+            <select id="queries"> </select>
+            <textarea id="query"></textarea>
+        </div>
+
+        <div id="ignore-box">
+            <div class="box-name">Ignore Classes</div>
+            <textarea id="ignore"></textarea>
+            <label for="similar" class="box-name horizontal-space">Select Similar</label>
+            <input type="checkbox" id="similar" name="similar" checked>
+            <label for="minimal" class="box-name horizontal-space">Minimal Xpath</label>
+            <input type="checkbox" id="minimal" name="minimal" checked>
+        </div>
+        <div id="save-button">
+            <span class="box-name"> Select appropriate field : </span>
+            <select name="dbfield" id="dbfield">
+                <option value="Carmart-Field-List"> Carmart Field List </option>
+                <option value="listing_url"> Car listing URL </option>
+                <option value="car_postcode"> Car Postcode </option>
+                <option value="dealer_name"> Dealer Name </option>
+                <option value="dealer_telephone"> Dealer Telephone </option>
+                <option value="dealer_url"> Dealer URL </option>
+                <option value="dealer_email"> Dealer Email </option>
+                <option value="car_model"> Car Model </option>
+                <option value="car_make"> Car Make </option>
+                <option value="make_model"> Car Make & Model </option>
+                <option value="model_variant"> Model Variant </option>
+                <option value="car_price"> Car Price </option>
+                <option value="car_year"> Car Year </option>
+                <option value="mileage"> Mileage </option>
+                <option value="body_type"> Body Type  </option>
+                <option value="fuel_type"> Fuel Type </option>
+                <option value="engine_size"> Engine size </option>
+                <option value="fuel_consumption"> Fuel Consumption </option>
+                <option value="acceleration"> Acceleration </option>
+                <option value="gearbox"> Gearbox </option>
+                <option value="drivetrain"> Drivetrain </option>
+                <option value="co2_emissions"> CO2 Emissions </option>
+                <option value="doors"> Doors  </option>
+                <option value="seats"> Seats  </option>
+                <option value="insurance_group"> Insurance Group </option>
+                <option value="annual_tax"> Annual Tax </option>
+                <option value="colour"> Colour </option>
+                <option value="advertiser_type"> Private or Trader advertiser </option>
+                <option value="car_description"> Car description </option>
+                <option value="car_specification"> Car Specification </option>
+                <option value="image_urls"> Image xpath </option>
+                <option value="listing_views"> Next Image xpaths </option>
+                <option value="listing_web_open"> Next page xpath </option>
+            </select>
+            <button id="save-attr"> Save (New) </button>
+        </div>
+
+    </div>
+
+    <div id="results-box">
+        <div class="box-name">Results ( <span id="node-count"></span> )</div>
+        <textarea id="results" readonly="readonly"></textarea>
+    </div>
+
+    <div id="help-box">
+        <img id="move-button" src="static/updown.png">
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <div id="help"><a href="http://data-miner.herokuapp.com/help/xpath" target="_blank"> Help &<br> Examples</a></div>
+    </div>
+    <br>
+</div>
+
+<div>
+    <span class="box-name"> Current Row: </span>
+    <select id="dbrow" >
+        <option value="-1"> -------------------- </option> 
+    </select>
+    <button id = "deleterow"> Delete This One. </button>
+    <button id="refresh-dbrow"> ... </button>
+</div>
+
+<hr/>
+<!--<script type="text/javascript" src="vendor/jquery/jquery-2.1.4.min.js"></script>-->
+<script type="text/javascript" src="vendor/underscore/underscore-min.js"></script>
+<script type="text/javascript" src="vendor/jquery/jquery-2.1.4.min.js"></script>
+
+<script type="text/javascript" src="js/global.js"></script>
+<script type="text/javascript" src="js/shared.js"></script>
+
+<script type="text/javascript" src="js/bar.js"></script>
+</body>
+</html>

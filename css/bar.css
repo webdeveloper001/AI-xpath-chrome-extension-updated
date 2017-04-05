@@ -1,0 +1,137 @@
+*,
+:before,
+:after {
+    box-sizing: border-box
+}
+
+body {
+    background: rgba(0, 0, 0, 0.9);
+    font-family: sans-serif;
+    height: 210px;
+    margin: 0;
+    overflow: hidden;
+    padding: 12px
+}
+
+textarea {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #f0f0f0;
+    display: block;
+    font-family: monospace;
+    font-size: 12px;
+    margin: 0;
+    overflow-x: hidden;
+    padding: 2px;
+    resize: none;
+    height: 40px
+}
+
+#flex-box {
+    display: flex;
+}
+
+#left-box,
+#results-box,
+#help-box {
+    display: flex;
+    flex-direction: column
+}
+
+#left-box {
+    padding-right: 12px;
+    width: 67%
+}
+
+#ignore-box {
+    display: flex;
+    flex-direction: row
+}
+
+#query-box {
+    padding-top: 5px
+}
+
+.horizontal-space {
+    padding-left: 5px
+}
+
+.horizontal-flow {
+    display: flex;
+    flex-direction: row
+}
+
+#ignore-box {
+    padding-top: 10px
+}
+
+#ignore {
+    height: 25px;
+    width: 100%
+}
+
+#results-box {
+    padding-right: 5px;
+    width: 33%
+}
+
+#help-box {
+    width: 50px;
+    padding: 0 0 5px 5px
+}
+
+.box-name {
+    color: gray;
+    font-size: 12px;
+    padding-bottom: 2px;
+    text-transform: uppercase
+}
+
+#query,
+#results,
+#parent {
+    flex: 1;
+    width: 100%
+}
+
+#move-button {
+    color: white
+}
+
+#move-button {
+    width: 35px;
+    height: 35px;
+    position: absolute;
+    top: 0;
+    right: 0
+}
+
+#help a:link {
+    color: white;
+    position: relative;
+    text-decoration: none
+}
+
+#help a:visited {
+    color: white;
+    position: relative;
+    text-decoration: none
+}
+
+#get-parent {
+    margin-left: 15px
+}
+
+#node-count {
+    font-size: 16px;
+    color: #dd44aa
+}
+
+#queries {
+    max-width: 100%;
+    min-width: 100%;
+}
+
+#dbrow {
+    max-width: 70%;
+}

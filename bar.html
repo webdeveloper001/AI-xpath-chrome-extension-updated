@@ -33,8 +33,6 @@
         <div id="save-button">
             <span class="box-name"> Select appropriate field : </span>
             <select name="dbfield" id="dbfield">
-                <option value="Carmart-Field-List"> Carmart Field List </option>
-                <option value="listing_url"> Car listing URL </option>
                 <option value="car_postcode"> Car Postcode </option>
                 <option value="dealer_name"> Dealer Name </option>
                 <option value="dealer_telephone"> Dealer Telephone </option>
@@ -64,12 +62,12 @@
                 <option value="car_description"> Car description </option>
                 <option value="car_specification"> Car Specification </option>
                 <option value="image_urls"> Image xpath </option>
-                <option value="listing_views"> Next Image xpaths </option>
-                <option value="listing_web_open"> Next page xpath </option>
+                <option value="next_image"> Next Image xpaths </option>
+                <option value="next_page"> Next page xpath </option>
             </select>
-            <button id="save-attr"> Save (New) </button>
+            <button id="save-attr"> Save Xpath </button>
+            <button id="save-result"> Save Result </button>
         </div>
-
     </div>
 
     <div id="results-box">
@@ -91,11 +89,11 @@
 
 <div>
     <span class="box-name"> Current Row: </span>
-    <select id="dbrow" >
-        <option value="-1"> -------------------- </option> 
-    </select>
-    <button id = "deleterow"> Delete This One. </button>
+    <span id = "dbrow" class="box-data" > </span>
+    <button id = "savelistingurl"> Save listing Url. </button>
     <button id="refresh-dbrow"> ... </button>
+    <span class="box-name"> Last saved </span>
+    <span id = "last_field_name" class="box-data" > </span> : <span id = "last_field_value" class="box-data" > </span>
 </div>
 
 <hr/>

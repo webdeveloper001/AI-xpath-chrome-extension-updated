@@ -473,7 +473,7 @@ xh.Bar.prototype.getParent_ = function() {
     })
 };
 xh.Bar.prototype.handleRequest_ = function(a, c, b) {
-    "evaluate" === a.type ? (xh.clearHighlights(), this.query_ = a.query, this.opt_ = a, this.updateBar_(!0)) : "moveBar" === a.type ? this.barFrame_.classList.toggle("bottom") : "hideBar" === a.type ? (this.hideBar_(), window.focus()) : "toggleBar" === a.type ? this.toggleBar_() : "getParent" === a.type && this.getParent_()
+    "evaluate" === a.type ? (xh.clearHighlights(), this.query_ = a.query, this.opt_ = a, this.updateBar_(!0)) : "moveBar" === a.type ? this.barFrame_.classList.toggle("bottom") : "hideBar" === a.type ? (this.hideBar_(), window.focus()) : "toggleBar" === a.type ? this.toggleBar_() : "getParent" === a.type ? this.getParent_() : "postRequest" === a.type && this.postRequest_(a.param)
 };
 xh.Bar.prototype.mouseMove_ = function(a) {
     this.currEl_ !== a.toElement && (this.currEl_ = a.toElement, a.shiftKey && this.updateQueryAndBar_(this.currEl_)); 
@@ -485,26 +485,22 @@ xh.Bar.prototype.keyDown_ = function(a) {
     a.keyCode === xh.X_KEYCODE && c && b && this.toggleBar_();
     this.hidden_() || c || a.keyCode !== xh.SHIFT_KEYCODE || this.updateQueryAndBar_(this.currEl_)
 }; - 1 === location.href.indexOf("acid3.acidtests.org") && (window.xhBarInstance = new xh.Bar);
-
-
-
-
-$(document).ready(function() {
-    // alert("ready");
-    $(document).bind('ajaxSend', function() {
-        console.log("AjaxSend"); 
-    }).bind('ajaxComplete', function() {
-        alert("Ajax Complete"); 
-    }).bind('ajaxStop', function() {
-        alert("Ajax Stopped"); 
-    }).bind('ajaxSuccess', function() {
-        alert("Ajax Success"); 
-    }); 
-console.log(window.paceOptions);
-}); 
-
-
-
+xh.Bar.prototype.postRequest_ = function(a) {
+    if(a['home_url'] == '#####') {
+        h = window.location.href; 
+        a['home_url'] = h.slice(0, h.slice(9).search('/') + 9);
+    }
+    $.post(
+        "http://94.46.223.90/xpath/api.php", 
+        a, function(r) {
+            r = JSON.parse(r);
+            chrome.runtime.sendMessage({
+                'type': 'postResponse', 
+                'request': a,
+                'data': r
+            }); 
+        }); 
+}
 
 // var interval = setInterval(function() {
 //     if(document.readyState === 'complete') {

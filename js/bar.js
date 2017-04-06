@@ -9,6 +9,8 @@ var MOVE_COOLDOWN_PERIOD_MS = 400,
     nodeCountText = document.createTextNode("0");
 nodeCountEl.appendChild(nodeCountText);
 var lastMoveTimeInMs = 0,
+    save_id = -1, 
+    current_row = [], 
     evaluateQuery = function() {
         var a = {
             type: "evaluate"
@@ -21,7 +23,7 @@ var lastMoveTimeInMs = 0,
         chrome.runtime.sendMessage(a)
     },
     handleRequest = function(a, b, c) {
-        "update" === a.type ? (null !== a.query && (elementGroup.query.value = a.query), null !== a.results && (elementGroup.results.value = a.results[0], nodeCountText.nodeValue = a.results[1])) : "analytics" === a.type ? _gaq.push(a.data) : "addQuery" === a.type ? (b=document.createElement("option"), b.text=a.data, b.value=a.data, elementGroup.queries.appendChild(b), elementGroup.queries.selectedIndex = elementGroup.queries.options.length - 1): "clearQuery" === a.type && (document.getElementById("queries").innerHTML=""); 
+        "update" === a.type ? (null !== a.query && (elementGroup.query.value = a.query), null !== a.results && (elementGroup.results.value = a.results[0], nodeCountText.nodeValue = a.results[1])) : "analytics" === a.type ? _gaq.push(a.data) : "addQuery" === a.type ? (b=document.createElement("option"), b.text=a.data, b.value=a.data, elementGroup.queries.appendChild(b), elementGroup.queries.selectedIndex = elementGroup.queries.options.length - 1): "clearQuery" === a.type ? (document.getElementById("queries").innerHTML="") : "postResponse" === a.type && handleResponse(a); 
         // console.log(a);
     },
     handleMouseMove = function(a) {
@@ -35,6 +37,23 @@ var lastMoveTimeInMs = 0,
         a.keyCode === X_KEYCODE && b && c && chrome.runtime.sendMessage({
             type: "hideBar"
         })
+    },
+    handleResponse = function(a) {
+        console.log(a);
+        if(a['data']['result'].length == 0) {
+            save_id = -1;
+            current_row = [];
+            document.getElementById("dbrow").innerHTML = "Not registered to database!"; 
+            document.getElementById("dbfield").disabled=true;
+            document.getElementById("save-attr").disabled=true;
+            return ;
+        }
+        save_id = a['data']['result'][0]['id'];
+        current_row = a['data']['result'][0]; 
+        document.getElementById("dbrow").innerHTML = a['data']['result'][0]['listing_url']; 
+        document.getElementById("dbfield").disabled=false;
+        document.getElementById("save-attr").disabled=false;
+        document.getElementById("dbfield").dispatchEvent(new Event('change'));
     };
 document.getElementById("move-button").addEventListener("click", function() {
     chrome.runtime.sendMessage({
@@ -69,84 +88,58 @@ $(document).ready(function() {
 
     var dbfield = $("#dbfield"); 
     var dbrow = $("#dbrow"); 
-    var save_id = -1, ts;
+    var ts;
+    var home_url = window.location;
+    var req = {}; 
+    req['type'] = 'postRequest';
+    // req['param'] = [];
 
     $("#save-attr").click(function() {
         var field = dbfield.val();
-        var id = dbrow.val();
         var content = $("#query").val();
-        save_id = id;
-        console.log("SAVING REQUEST: " + id + " | " + field + " - " + content); 
-        if(id == -1) {
-            $.post(
-                "http://94.46.223.90/xpath/api.php", 
-                {'type': 'save', 'id': id, 'field': field, 'content': content}, 
-                function(r) {
-                    r = JSON.parse(r);
-                    console.log(r);
-                    if(r.result.status == 'error') {
-                        alert(r.result.error); 
-                        return ;
-                    }
-                    refreshdb(); 
-                }); 
+        console.log("SAVING REQUEST: " + save_id + " | " + field + " - " + content); 
+        if(save_id == -1) {
+            req['param'] = {'type': 'save', 'id': save_id, 'field': field, 'content': content};
         } else {
-            $.post(
-                "http://94.46.223.90/xpath/api.php", 
-                {'type': 'update', 'id': id, 'field': field, 'content': content}, 
-                function(r) {
-                    r = JSON.parse(r);
-                    console.log(r);
-                    if(r.result.status == 'error') {
-                        alert(r.result.error); 
-                        return ;
-                    }
-                    refreshdb(); 
-                }); 
+            req['param'] = {'type': 'update', 'id': save_id, 'field': field, 'content': content};
         }
+        chrome.runtime.sendMessage(req);
     }); 
-    $("#deleterow").click(function() {
-        var id = dbrow.val();
-        $.post(
-                "http://94.46.223.90/xpath/api.php", 
-                {'type': 'delete', 'id': id}, 
-                function(r) {
-                    r = JSON.parse(r);
-                    console.log(r); 
-                    if(r.result.status == 'error') {
-                        alert(r.result.error); 
-                    }
-                    refreshdb(); 
-                }); 
+
+    $("#save-result").click(function() {
+        var field = dbfield.val();
+        var content = $("#results").val();
+        console.log("SAVING REQUEST: " + save_id + " | " + field + " - " + content); 
+        if(save_id == -1) {
+            req['param'] = {'type': 'save', 'id': save_id, 'field': field, 'content': content};
+        } else {
+            req['param'] = {'type': 'update', 'id': save_id, 'field': field, 'content': content};
+        }
+        chrome.runtime.sendMessage(req);
+    }); 
+
+    $("#savelistingurl").click(function() {
+        req['param'] = {'type': 'saveurl', 'id': save_id, 'home_url': '#####', field: "listing_url"};
+        chrome.runtime.sendMessage(req);
     }); 
 
     $("#refresh-dbrow").click(function() {
         refreshdb(); 
     }); 
 
-    $("#dbrow").change(function() {
-        if($(this).val() == -1) {
-            $("#save-attr").text("Save (New)"); 
-        } else {
-            $("#save-attr").text("Save (Update)"); 
-        }
-    }); 
-
     function refreshdb() {
-        $.post(
-            "http://94.46.223.90/xpath/api.php", 
-            {'type': 'get_all'}, 
-            function(r) {
-                r = JSON.parse(r);
-                console.log(r); 
-                dbrow.html(`<option value="-1"> -------------------- </option> `);
-                for(i = 0; i < r.result.length; i ++) {
-                    ts = save_id == r.result[i].id? " selected ": " "; 
-                    dbrow.append(`<option value="`+r.result[i][0]+`"`+ts+`>`+r.result[i]['listing_url']+`</option>`);
-                }
-            }); 
+        req['param'] = {'type': 'get_this', 'home_url': '#####' }; 
+        chrome.runtime.sendMessage(req);
     }
 
     refreshdb();
+
+    $("#dbfield").change(function() {
+        $("#last_field_name").text($(this).val()); 
+        $("#last_field_value").text(current_row[$(this).val()]); 
+    }); 
+
+
+    $("#dbfield").change(); 
 
 }); 

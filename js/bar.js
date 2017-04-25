@@ -1,6 +1,42 @@
 /*
  Apache License, Version 2.0.
 */
+
+
+var field_dict = {
+    "car_postcode": [ /^(GIR ?0AA|(?:[A-PR-UWYZ](?:\d|\d{2}|[A-HK-Y]\d|[A-HK-Y]\d\d|\d[A-HJKSTUW]|[A-HK-Y]\d[ABEHMNPRV-Y])) ?\d[ABD-HJLNP-UW-Z]{2})$/i ], 
+    "dealer_name": [ /dealer\s*name/i ], 
+    "dealer_telephone": [/^[\\(]{0,1}([0-9]){3}[\\)]{0,1}[ ]?([^0-1]){1}([0-9]){2}[ ]?[-]?[ ]?([0-9]){4}[ ]*((x){0,1}([0-9]){1,5}){0,1}$/i, /^\(0[1-9]{1}\)[0-9]{8}$/i ], 
+    "dealer_url": [/^((http:\/\/www\.)|(www\.)|(http:\/\/))[a-zA-Z0-9._-]+\.[a-zA-Z.]{2,5}$/i], 
+    "dealer_email": [/^[A-Z0-9._-]+@[A-Z0-9.-]+\.[A-Z0-9.-]+$/i], 
+    "car_model": [/car\s*model/i, /model/i], 
+    "car_make": [/car\s*make/i, /make/i], 
+    "make_model": [/make\s*model/i], 
+    "model_variant": [/variant/i], 
+    "car_price": [/price/i, /(\£|\$)\d+/], 
+    "car_year": [/year/i], 
+    "mileage": [/mileage/i, /^\d+,?(\d|X|k)+\smiles/], 
+    "body_type": [/body\s*type/i, /body\s*style/i], 
+    "fuel_type": [/fuel\s*tyoe/i, /fueltype/i, /fuel/i], 
+    "engine_size": [/engine size/i, /cc$/i], 
+    "fuel_consumption": [/fuel fuel_consumption/i], 
+    "acceleration": [/acceleration/i], 
+    "gearbox": [/gearbox/i, /transmission/i], 
+    "drivetrain": [/drivetrain/i], 
+    "co2_emissions": [/co2/i, /co2\s*emissions/i], 
+    "doors": [/door/i], 
+    "seats": [/seat/i], 
+    "insurance_group": [/insurance/i, /ins\s*group/i],
+    "annual_tax": [/annual\s*tax/i, /annual\s*rating/i], 
+    "colour": [/color/i, /colour/i], 
+    "advertiser_type": [/advertiser\s*type/i], 
+    "car_description": [/description/i], 
+    "car_specification": [/specification/i], 
+    "image_urls": [/.*(jpeg|png|gif|bmp|jpg)/i], 
+    "next_image": [/next/i], 
+    "next_page": [/(next|next\s*page)/i]
+}
+
 var MOVE_COOLDOWN_PERIOD_MS = 400,
     X_KEYCODE = 88,
     nodeCountEl = document.getElementById("node-count"),
@@ -16,14 +52,18 @@ var lastMoveTimeInMs = 0,
             type: "evaluate"
         };
         _.each(elementGroup, function(b) {
+            console.log("EACH FOR EVALUATE");
+            console.log(b); 
             var c;
             "textarea" == b.type ? c = b.value && "" !== b.value.trim() ? b.value : void 0 : "checkbox" == b.type && (c = b.checked);
             a[b.id] = c
         });
+        console.log("EVALUATE PARAM FROM BARJS")
+        console.log(a); 
         chrome.runtime.sendMessage(a)
     },
     handleRequest = function(a, b, c) {
-        "update" === a.type ? (null !== a.query && (elementGroup.query.value = a.query), null !== a.results && (elementGroup.results.value = a.results[0], nodeCountText.nodeValue = a.results[1])) : "analytics" === a.type ? _gaq.push(a.data) : "addQuery" === a.type ? (b=document.createElement("option"), b.text=a.data, b.value=a.data, elementGroup.queries.appendChild(b), elementGroup.queries.selectedIndex = elementGroup.queries.options.length - 1): "clearQuery" === a.type ? (document.getElementById("queries").innerHTML="") : "postResponse" === a.type && handleResponse(a); 
+        "update" === a.type ? (null !== a.query && undefined !== a.query && (elementGroup.query.value = a.query, detect_field(a.query, a.results[0])), null !== a.results && (elementGroup.results.value = a.results[0], nodeCountText.nodeValue = a.results[1])) : "addQuery" === a.type ? (b=document.createElement("option"), b.text=a.data, b.value=a.data, elementGroup.queries.appendChild(b), elementGroup.queries.selectedIndex = 0) : "clearQuery" === a.type ? (document.getElementById("queries").innerHTML="") : "postResponse" === a.type && handleResponse(a); 
         // console.log(a);
     },
     handleMouseMove = function(a) {
@@ -46,6 +86,7 @@ var lastMoveTimeInMs = 0,
             document.getElementById("dbrow").innerHTML = "Not registered to database!"; 
             document.getElementById("dbfield").disabled=true;
             document.getElementById("save-attr").disabled=true;
+            document.getElementById("save-result").disabled=true;
             return ;
         }
         save_id = a['data']['result'][0]['id'];
@@ -53,8 +94,25 @@ var lastMoveTimeInMs = 0,
         document.getElementById("dbrow").innerHTML = a['data']['result'][0]['listing_url']; 
         document.getElementById("dbfield").disabled=false;
         document.getElementById("save-attr").disabled=false;
+        document.getElementById("save-result").disabled=false;
         document.getElementById("dbfield").dispatchEvent(new Event('change'));
-    };
+    }, 
+    detect_field = function(xpath, result) {
+        console.log("DETECT FIELD");
+        console.log(xpath); 
+        console.log(result); 
+        var k, i;
+        for(k in field_dict) {
+            for(i = 0; i < field_dict[k].length; i ++) {
+                if(xpath.match(field_dict[k][i]) || result.match(field_dict[k][i])) {
+                    $("#dbfield").val(k); 
+                    console.log("SELECTED "+k); 
+                }
+            }
+        }
+        // $("#dbfield").val('-'); 
+    }; 
+
 document.getElementById("move-button").addEventListener("click", function() {
     chrome.runtime.sendMessage({
         type: "moveBar"
@@ -72,17 +130,6 @@ for (var i = 0; i < elementGroupNames.length; i++) {
     "textarea" == elem.type ? elem.addEventListener("keyup", evaluateQuery) : "checkbox" == elem.type && elem.addEventListener("click", evaluateQuery);
     elementGroup[elementGroupNames[i]] = elem
 }
-var _gaq = _gaq || [];
-_gaq.push(["_setAccount", utilityFn.analyticsID]);
-_gaq.push(["_trackPageview"]);
-(function() {
-    var a = document.createElement("script");
-    a.type = "text/javascript";
-    a.async = !0;
-    a.src = "https://ssl.google-analytics.com/ga.js";
-    var b = document.getElementsByTagName("script")[0];
-    b.parentNode.insertBefore(a, b)
-})();
 
 $(document).ready(function() {
 
@@ -96,6 +143,11 @@ $(document).ready(function() {
 
     $("#save-attr").click(function() {
         var field = dbfield.val();
+        if(field === '-') {
+            dbfield.css('border', '2px solid #f00');
+            return; 
+        }
+        dbfield.css('border', 'none');
         var content = $("#query").val();
         console.log("SAVING REQUEST: " + save_id + " | " + field + " - " + content); 
         if(save_id == -1) {
@@ -109,6 +161,11 @@ $(document).ready(function() {
     $("#save-result").click(function() {
         var field = dbfield.val();
         var content = $("#results").val();
+        if(field === '-') {
+            dbfield.css('border', '2px solid #f00');
+            return; 
+        }
+        dbfield.css('border', 'none');
         console.log("SAVING REQUEST: " + save_id + " | " + field + " - " + content); 
         if(save_id == -1) {
             req['param'] = {'type': 'save', 'id': save_id, 'field': field, 'content': content};
@@ -127,6 +184,11 @@ $(document).ready(function() {
         refreshdb(); 
     }); 
 
+    $("#xh-remove").click(function() {
+        req['type'] = 'remove-xh-elem'; 
+        chrome.runtime.sendMessage(req);
+    }); 
+
     function refreshdb() {
         req['param'] = {'type': 'get_this', 'home_url': '#####' }; 
         chrome.runtime.sendMessage(req);
@@ -141,5 +203,19 @@ $(document).ready(function() {
 
 
     $("#dbfield").change(); 
+
+
+    $("#relative").change(function() {
+        if($(this).prop('checked'))
+            $("#query").attr('placeholder', 'Click right mouse button on each elements you want to get xpath from'); 
+        else 
+            $("#query").attr('placeholder', 'Hold shift key and hover over element you want to get xpath from'); 
+        $("#query").val(''); 
+
+        chrome.runtime.sendMessage({
+            'type': 'change_relative_mode'
+        }); 
+
+    }); 
 
 }); 

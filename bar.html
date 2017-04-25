@@ -19,7 +19,7 @@
         <div id="query-box">
             <div class="box-name">Query (Relative to Container)</div>
             <select id="queries"> </select>
-            <textarea id="query"></textarea>
+            <textarea id="query" placeholder='Hold shift key and hover over element you want to get xpath from' ></textarea>
         </div>
 
         <div id="ignore-box">
@@ -29,10 +29,14 @@
             <input type="checkbox" id="similar" name="similar" checked>
             <label for="minimal" class="box-name horizontal-space">Minimal Xpath</label>
             <input type="checkbox" id="minimal" name="minimal" checked>
+
+            <label for="relative" class="box-name horizontal-space"> Relative Xpath </label>
+            <input type="checkbox" id="relative" name="relative">
         </div>
         <div id="save-button">
             <span class="box-name"> Select appropriate field : </span>
             <select name="dbfield" id="dbfield">
+                <option value="-" selected > --- </option>
                 <option value="car_postcode"> Car Postcode </option>
                 <option value="dealer_name"> Dealer Name </option>
                 <option value="dealer_telephone"> Dealer Telephone </option>
@@ -94,6 +98,7 @@
     <button id="refresh-dbrow"> ... </button>
     <span class="box-name"> Last saved </span>
     <span id = "last_field_name" class="box-data" > </span> : <span id = "last_field_value" class="box-data" > </span>
+    <button id="xh-remove" style = "float: right"> Remove selected </button>
 </div>
 
 <hr/>

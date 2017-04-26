@@ -71,6 +71,7 @@
             </select>
             <button id="save-attr"> Save Xpath </button>
             <button id="save-result"> Save Result </button>
+            <button id="review" class="pull-right"> Review </button>
         </div>
     </div>
 
@@ -98,10 +99,27 @@
     <button id="refresh-dbrow"> ... </button>
     <span class="box-name"> Last saved </span>
     <span id = "last_field_name" class="box-data" > </span> : <span id = "last_field_value" class="box-data" > </span>
-    <button id="xh-remove" style = "float: right"> Remove selected </button>
+    <button id="xh-remove" class="pull-right"> Remove selected </button>
 </div>
 
 <hr/>
+
+<div class="xh-review-section">
+    <div class="modal-background"> </div>
+
+    <div class="modal">
+        <div class="modal-header"> </div>
+        <div class="modal-content"> <ul> </ul> </div>
+        <div class="modal-footer">
+            <div>
+                <button class="nexturl"> Next Url </button>
+                <button class="nexturl new"> Next Incomplete Url </button>
+                <button id="markascomplete"> Mark as Complete </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--<script type="text/javascript" src="vendor/jquery/jquery-2.1.4.min.js"></script>-->
 <script type="text/javascript" src="vendor/underscore/underscore-min.js"></script>
 <script type="text/javascript" src="vendor/jquery/jquery-2.1.4.min.js"></script>

@@ -32,3 +32,70 @@
 img.xh-highlight {
     opacity: .5 !important
 }
+
+.xh-review-section {
+
+}
+
+.xh-review-section .modal-background {
+    position: fixed;
+    top:0;
+    left:0;
+    background: #000;
+    opacity: 0.5;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+}
+
+.xh-review-section .modal {
+    position: absolute;
+    width: 80%;
+    margin: 200px 9%;
+    top: 0;
+    left: 0;
+    padding: 2%;
+    background: #000;
+    color: #fff;
+    z-index: 1000;
+    border: 2px solid #fff;
+    box-shadow: 1px 1px 7px 3px #eee;
+}
+
+.xh-review-section .modal-header,
+.xh-review-section .modal-content,
+.xh-review-section .modal-footer {
+    background: #000;
+    color: #fff;
+}
+.xh-review-section .modal-content {
+    border-bottom: 1px solid #fff;
+    margin-bottom: 20px;
+    border-top: 1px solid #fff;
+    padding-top: 10px;
+}
+.xh-review-section .modal-header > h2 {
+    color: #fff;
+}
+.xh-review-section .modal span {
+    display: inline-block;
+    padding: 0;
+    width: 75%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden; 
+    top: 6px;
+    position: relative;
+}
+.xh-review-section .modal span.disabled {
+    color: #777;
+}
+.xh-review-section .modal label {
+    display: inline-block;
+    width: 20%;
+    padding: 0;
+    margin-bottom: 10px;
+}
+.xh-review-section .modal-footer > div {
+    float: right;
+}

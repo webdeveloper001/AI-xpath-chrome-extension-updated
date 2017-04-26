@@ -52,14 +52,12 @@ var lastMoveTimeInMs = 0,
             type: "evaluate"
         };
         _.each(elementGroup, function(b) {
-            console.log("EACH FOR EVALUATE");
-            console.log(b); 
             var c;
             "textarea" == b.type ? c = b.value && "" !== b.value.trim() ? b.value : void 0 : "checkbox" == b.type && (c = b.checked);
             a[b.id] = c
         });
-        console.log("EVALUATE PARAM FROM BARJS")
-        console.log(a); 
+        // console.log("EVALUATE PARAM FROM BARJS")
+        // console.log(a); 
         chrome.runtime.sendMessage(a)
     },
     handleRequest = function(a, b, c) {
@@ -79,7 +77,6 @@ var lastMoveTimeInMs = 0,
         })
     },
     handleResponse = function(a) {
-        console.log(a);
         if(a['data']['result'].length == 0) {
             save_id = -1;
             current_row = [];
@@ -87,6 +84,7 @@ var lastMoveTimeInMs = 0,
             document.getElementById("dbfield").disabled=true;
             document.getElementById("save-attr").disabled=true;
             document.getElementById("save-result").disabled=true;
+            document.getElementById("review").disabled=true;
             return ;
         }
         save_id = a['data']['result'][0]['id'];
@@ -95,18 +93,19 @@ var lastMoveTimeInMs = 0,
         document.getElementById("dbfield").disabled=false;
         document.getElementById("save-attr").disabled=false;
         document.getElementById("save-result").disabled=false;
+        document.getElementById("review").disabled=false;
         document.getElementById("dbfield").dispatchEvent(new Event('change'));
+        if(Number(current_row['is_complete']) == 1)
+            document.getElementById('dbrow').style.backgroundColor = '#009F00';
+        else 
+            document.getElementById('dbrow').style.backgroundColor = 'transparent';
     }, 
     detect_field = function(xpath, result) {
-        console.log("DETECT FIELD");
-        console.log(xpath); 
-        console.log(result); 
         var k, i;
         for(k in field_dict) {
             for(i = 0; i < field_dict[k].length; i ++) {
                 if(xpath.match(field_dict[k][i]) || result.match(field_dict[k][i])) {
                     $("#dbfield").val(k); 
-                    console.log("SELECTED "+k); 
                 }
             }
         }
@@ -149,7 +148,7 @@ $(document).ready(function() {
         }
         dbfield.css('border', 'none');
         var content = $("#query").val();
-        console.log("SAVING REQUEST: " + save_id + " | " + field + " - " + content); 
+        // console.log("SAVING REQUEST: " + save_id + " | " + field + " - " + content); 
         if(save_id == -1) {
             req['param'] = {'type': 'save', 'id': save_id, 'field': field, 'content': content};
         } else {
@@ -166,7 +165,7 @@ $(document).ready(function() {
             return; 
         }
         dbfield.css('border', 'none');
-        console.log("SAVING REQUEST: " + save_id + " | " + field + " - " + content); 
+        // console.log("SAVING REQUEST: " + save_id + " | " + field + " - " + content); 
         if(save_id == -1) {
             req['param'] = {'type': 'save', 'id': save_id, 'field': field, 'content': content};
         } else {
@@ -201,9 +200,35 @@ $(document).ready(function() {
         $("#last_field_value").text(current_row[$(this).val()]); 
     }); 
 
-
     $("#dbfield").change(); 
 
+    $("#review").click(function() {
+        var conatiner = $(".xh-review-section .modal-content > ul"), tp, cls; 
+        console.log(current_row);
+        conatiner.html('');
+        $(".xh-review-section .modal-header").html('<h2>'+current_row['listing_url']+'</h2>');
+        for(k in field_dict) {
+            tp = '';
+            if(current_row[k] == '') {
+                tp = 'blank';
+                cls = 'disabled'; 
+            }
+            else {
+                tp = current_row[k]
+                cls = '';
+            }
+            conatiner.append('<li> <label>'+k+':</label><span class = "'+cls+'">'+tp+'</span></li>'); 
+        }
+        if(Number(current_row['is_complete']) == 0)
+            $("#markascomplete").text("Mark as Incomplete");
+        console.log("SEINGING ELEMENT");
+        console.log($(".xh-review-section").clone().wrap('<div/>').parent().html());
+        chrome.runtime.sendMessage({
+            'type': 'show-review-section', 
+            'element': $(".xh-review-section").clone().wrap('<div/>').parent().html(), 
+            'id': save_id
+        }); 
+    }); 
 
     $("#relative").change(function() {
         if($(this).prop('checked'))

@@ -90,7 +90,7 @@ xh.lastElemProcess = function(xp) {
         if (t.resultType === XPathResult.UNORDERED_NODE_ITERATOR_TYPE) {
             t = t.iterateNext();
             t = $(t).prev().text();
-            console.log(t);
+            // console.log(t);
             t = xp.replace(re, `tr/th[text()="`+t+`"]/following-sibling::td`);
             if(xh.all_queries.indexOf(t) == -1) {
                 xh.all_queries.push(t);
@@ -117,10 +117,10 @@ xh.mainCourse = function(a, c) {
     var id_depth = 0;
     var tp, i;
     for(id_depth = 0; id_depth < 3; id_depth ++) {
-        console.log("DEPTH: "+id_depth);
+        // console.log("DEPTH: "+id_depth);
         xh.idflag = false;
         tp=xh.optimizeQuery(xh.makeQueryForElement(a, c, id_depth)); 
-        console.log(tp);
+        // console.log(tp);
         if(!xh.idflag) break;
     }
     xh.lastElemProcess(tp)
@@ -237,7 +237,7 @@ xh.optimizeQuery = function(oq) {
     var step1, step2, step2_5, step3;
 
     // console.log("ORIGINAL XPATH");
-    console.log(oq);
+    // console.log(oq);
 
     var s_points = []; // holds start index of every node
     var i, tm, s, r, nd, flag, j, e, sp1, sp2, sp2_5, sp3;
@@ -288,7 +288,7 @@ xh.optimizeQuery = function(oq) {
 	}
 
 	// console.log("STEP 1: Node Optimization RESULT");
-	console.log(tp);
+	// console.log(tp);
 
     step1 = tp;
 
@@ -350,7 +350,7 @@ xh.optimizeQuery = function(oq) {
     }
 
     // console.log("STEP 2: Class Optimization RESULT");
-    console.log(tp);
+    // console.log(tp);
 
     step2 = tp;
 
@@ -401,7 +401,7 @@ xh.optimizeQuery = function(oq) {
     }
 
     // console.log("STEP 2.5: Multiple Class Optimization RESULT");
-    console.log(tp);
+    // console.log(tp);
 
     step2_5 = tp;
 
@@ -513,7 +513,7 @@ xh.Bar.prototype.handleRequest_ = function(a, c, b) {
     }
     if("change_relative_mode" === a.type) {
         var p = this;
-        console.log(p); 
+        // console.log(p); 
         relative_mode = !relative_mode; 
         if(relative_mode) {
             document.addEventListener('contextmenu', p.boundMouseClick_); 
@@ -523,6 +523,49 @@ xh.Bar.prototype.handleRequest_ = function(a, c, b) {
             firingElement1.style.border = origColor1;
         }
     }
+    if("show-review-section" == a.type) {
+        $("body").append(a.element);
+        console.log(a.element);
+        // $(".xh-review-section")
+        $(".xh-review-section .modal-background").click(function() {
+            $(this).parent().hide();
+            $(this).parent().remove();
+        }); 
+        $("#markascomplete").click(function() {
+            param = {
+                'type': 'completeinverse', 
+                'id': a.id
+            }; 
+            $.post(
+                "http://94.46.223.90/xpath/api.php", 
+                param, function(r) {
+                    r = JSON.parse(r);
+                    chrome.runtime.sendMessage({
+                        'type': 'postResponse', 
+                        'request': param,
+                        'data': r
+                    }); 
+                    if(Number(r['result'][0]['is_complete']) == 1) 
+                        $("#markascomplete").text("Mark as Incomplete"); 
+                    else 
+                        $("#markascomplete").text("Mark as Complete"); 
+                }); 
+        }); 
+        $(".xh-review-section button.nexturl").click(function() {
+            param = {
+                'type': 'nexturl', 
+                'new_url': $(this).hasClass('new'), 
+                'url': window.location.href
+            }
+            $.post(
+                "http://94.46.223.90/xpath/api.php", 
+                param, function(r) {
+                    r = JSON.parse(r);
+                    console.log(r);
+                    window.location = 'http://'+r['url'];
+                }); 
+        }); 
+    }
 
 };
 xh.Bar.prototype.mouseMove_ = function(a) {
@@ -530,7 +573,7 @@ xh.Bar.prototype.mouseMove_ = function(a) {
 };
 xh.Bar.prototype.mouseClick_ = function(a) {
     a.preventDefault(); 
-    console.log(a); 
+    // console.log(a); 
     analyseRightClick(a); 
     return false;
 }; 
@@ -639,7 +682,7 @@ function analyseRightClick(e) {
 
 'use strict';
 
-var debug=true;
+var debug=false;
 var interv = 3000;
 var selectElement1, origColor1, selectElement2, origColor2;
 var temp;
@@ -1256,7 +1299,6 @@ function updateRelativeXPath(xpath) {
         if((xpath.indexOf("/following-sibling::*")>-1) || (xpath.indexOf("/preceding-sibling::*")>-1)){
             xpath = xpath.substring(0, xpath.length - 1);
             xpath=xpath+firingElement1.tagName;
-
         }
 
         if(document.activeElement== document.querySelector('iframe')){

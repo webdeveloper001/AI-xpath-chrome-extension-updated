@@ -219,7 +219,7 @@ $(document).ready(function() {
             }
             conatiner.append('<li> <label>'+k+':</label><span class = "'+cls+'">'+tp+'</span></li>'); 
         }
-        if(Number(current_row['is_complete']) == 0)
+        if(Number(current_row['is_complete']) == 1)
             $("#markascomplete").text("Mark as Incomplete");
         console.log("SEINGING ELEMENT");
         console.log($(".xh-review-section").clone().wrap('<div/>').parent().html());

@@ -524,6 +524,7 @@ xh.Bar.prototype.handleRequest_ = function(a, c, b) {
         }
     }
     if("show-review-section" == a.type) {
+        $("body .xh-review-section").remove();
         $("body").append(a.element);
         console.log(a.element);
         // $(".xh-review-section")

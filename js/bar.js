@@ -206,8 +206,6 @@ $(document).ready(function() {
 
     $("#review").click(function() {
         var conatiner = $(".xh-review-section .modal-content > ul"), tp, cls, rp; 
-        console.log(current_row);
-        console.log(current_result_row);
         conatiner.html('');
         $(".xh-review-section .modal-header").html('<h2>'+current_row['listing_url']+'</h2>');
         for(k in field_dict) {
@@ -226,8 +224,6 @@ $(document).ready(function() {
         }
         if(Number(current_row['is_complete']) == 1)
             $("#markascomplete").text("Mark as Incomplete");
-        console.log("SEINGING ELEMENT");
-        console.log($(".xh-review-section").clone().wrap('<div/>').parent().html());
         chrome.runtime.sendMessage({
             'type': 'show-review-section', 
             'element': $(".xh-review-section").clone().wrap('<div/>').parent().html(), 

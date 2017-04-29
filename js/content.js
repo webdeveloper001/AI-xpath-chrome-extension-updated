@@ -594,7 +594,7 @@ xh.Bar.prototype.postRequest_ = function(a) {
         "http://94.46.223.90/xpath/api.php", 
         a, function(r) {
             r = JSON.parse(r);
-            console.log(r);
+            // console.log(r);
             chrome.runtime.sendMessage({
                 'type': 'postResponse', 
                 'request': a,

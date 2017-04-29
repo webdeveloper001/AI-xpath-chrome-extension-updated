@@ -88,12 +88,17 @@ img.xh-highlight {
 .xh-review-section .modal span {
     display: inline-block;
     padding: 0;
-    width: 75%;
+    width: 20%;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden; 
     top: 6px;
     position: relative;
+}
+.xh-review-section .modal span.result {
+    max-width: 55%;
+    width: 55%;
+    margin-left: 2%;
 }
 .xh-review-section .modal span {
     color: #fff;

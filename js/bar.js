@@ -47,6 +47,7 @@ nodeCountEl.appendChild(nodeCountText);
 var lastMoveTimeInMs = 0,
     save_id = -1, 
     current_row = [], 
+    current_result_row=[],
     evaluateQuery = function() {
         var a = {
             type: "evaluate"
@@ -89,6 +90,7 @@ var lastMoveTimeInMs = 0,
         }
         save_id = a['data']['result'][0]['id'];
         current_row = a['data']['result'][0]; 
+        current_result_row = a['data']['raw_result'][0];
         document.getElementById("dbrow").innerHTML = a['data']['result'][0]['listing_url']; 
         document.getElementById("dbfield").disabled=false;
         document.getElementById("save-attr").disabled=false;
@@ -150,9 +152,9 @@ $(document).ready(function() {
         var content = $("#query").val();
         // console.log("SAVING REQUEST: " + save_id + " | " + field + " - " + content); 
         if(save_id == -1) {
-            req['param'] = {'type': 'save', 'id': save_id, 'field': field, 'content': content};
+            req['param'] = {'type': 'save', 'id': save_id, 'home_url': '#####', 'field': field, 'content': content, 'result': $("#results").val()};
         } else {
-            req['param'] = {'type': 'update', 'id': save_id, 'field': field, 'content': content};
+            req['param'] = {'type': 'update', 'id': save_id, 'home_url': '#####', 'field': field, 'content': content, 'result': $("#results").val()};
         }
         chrome.runtime.sendMessage(req);
     }); 
@@ -167,9 +169,9 @@ $(document).ready(function() {
         dbfield.css('border', 'none');
         // console.log("SAVING REQUEST: " + save_id + " | " + field + " - " + content); 
         if(save_id == -1) {
-            req['param'] = {'type': 'save', 'id': save_id, 'field': field, 'content': content};
+            req['param'] = {'type': 'save', 'id': save_id, 'home_url': '#####', 'field': field, 'content': content, 'result': $("#results").val()};
         } else {
-            req['param'] = {'type': 'update', 'id': save_id, 'field': field, 'content': content};
+            req['param'] = {'type': 'update', 'id': save_id, 'home_url': '#####', 'field': field, 'content': content, 'result': $("#results").val()};
         }
         chrome.runtime.sendMessage(req);
     }); 
@@ -203,21 +205,24 @@ $(document).ready(function() {
     $("#dbfield").change(); 
 
     $("#review").click(function() {
-        var conatiner = $(".xh-review-section .modal-content > ul"), tp, cls; 
+        var conatiner = $(".xh-review-section .modal-content > ul"), tp, cls, rp; 
         console.log(current_row);
+        console.log(current_result_row);
         conatiner.html('');
         $(".xh-review-section .modal-header").html('<h2>'+current_row['listing_url']+'</h2>');
         for(k in field_dict) {
             tp = '';
             if(current_row[k] == '') {
                 tp = 'blank';
+                rp = 'blank';
                 cls = 'disabled'; 
             }
             else {
-                tp = current_row[k]
+                tp = current_row[k];
+                rp = current_result_row[k]; 
                 cls = '';
             }
-            conatiner.append('<li> <label>'+k+':</label><span class = "'+cls+'">'+tp+'</span></li>'); 
+            conatiner.append('<li> <label>'+k+':</label><span class = "'+cls+'">'+tp+'</span><span class = "result '+cls+'">'+rp+'</span></li>'); 
         }
         if(Number(current_row['is_complete']) == 1)
             $("#markascomplete").text("Mark as Incomplete");

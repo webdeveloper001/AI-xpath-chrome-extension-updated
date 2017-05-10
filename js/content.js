@@ -25,11 +25,11 @@ Array.prototype.equals = function (array) {
             // recurse into the nested arrays
             if (!this[i].equals(array[i]))
                 return false;       
-        }           
+        }
         else if (this[i] != array[i]) { 
             // Warning - two different object instances will never be equal: {x:20} != {x:20}
             return false;   
-        }           
+        }
     }       
     return true;
 }
@@ -538,7 +538,7 @@ xh.Bar.prototype.handleRequest_ = function(a, c, b) {
                 'id': a.id
             }; 
             $.post(
-                "http://94.46.223.90/xpath/api.php", 
+                "https://www.siteindex.co.uk/api.php", 
                 param, function(r) {
                     r = JSON.parse(r);
                     chrome.runtime.sendMessage({
@@ -559,7 +559,7 @@ xh.Bar.prototype.handleRequest_ = function(a, c, b) {
                 'url': window.location.href
             }
             $.post(
-                "http://94.46.223.90/xpath/api.php", 
+                "https://www.siteindex.co.uk/api.php", 
                 param, function(r) {
                     r = JSON.parse(r);
                     console.log(r);
@@ -591,7 +591,7 @@ xh.Bar.prototype.postRequest_ = function(a) {
         a['home_url'] = h;
     }
     $.post(
-        "http://94.46.223.90/xpath/api.php", 
+        "https://www.siteindex.co.uk/api.php", 
         a, function(r) {
             r = JSON.parse(r);
             // console.log(r);

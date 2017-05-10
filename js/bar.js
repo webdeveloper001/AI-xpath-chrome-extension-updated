@@ -78,6 +78,7 @@ var lastMoveTimeInMs = 0,
         })
     },
     handleResponse = function(a) {
+        console.log(a);
         if(a['data']['result'].length == 0) {
             save_id = -1;
             current_row = [];
@@ -217,7 +218,10 @@ $(document).ready(function() {
             }
             else {
                 tp = current_row[k];
-                rp = current_result_row[k]; 
+                if (current_result_row == undefined)
+                    rp = 'blank';
+                else
+                    rp = current_result_row[k]; 
                 cls = '';
             }
             conatiner.append('<li> <label>'+k+':</label><span class = "'+cls+'">'+tp+'</span><span class = "result '+cls+'">'+rp+'</span></li>'); 
